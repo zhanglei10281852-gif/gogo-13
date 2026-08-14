@@ -51,36 +51,62 @@ func (t *Task) parseSchedule() error {
 	return nil
 }
 
+type durationSyntax struct {
+	suffix string
+	unit   time.Duration
+}
+
+var customDurationSyntaxes = []durationSyntax{
+	{suffix: "min", unit: time.Minute},
+	{suffix: "m", unit: time.Minute},
+	{suffix: "hour", unit: time.Hour},
+	{suffix: "hr", unit: time.Hour},
+	{suffix: "h", unit: time.Hour},
+	{suffix: "sec", unit: time.Second},
+	{suffix: "s", unit: time.Second},
+}
+
 func parseDuration(s string) (time.Duration, error) {
 	s = strings.TrimSpace(s)
 	if s == "" {
 		return 0, fmt.Errorf("empty duration")
 	}
 	if d, err := time.ParseDuration(s); err == nil {
-		return d, nil
+		return validatePositiveDuration(s, d)
 	}
-	if n, err := strconv.Atoi(s); err == nil {
-		return time.Duration(n) * time.Minute, nil
+	if n, err := strconv.ParseInt(s, 10, 64); err == nil {
+		return scaleDuration(s, n, time.Minute)
 	}
-	if strings.HasSuffix(s, "m") || strings.HasSuffix(s, "min") {
-		s2 := strings.TrimSuffix(strings.TrimSuffix(s, "min"), "m")
-		if n, err := strconv.Atoi(strings.TrimSpace(s2)); err == nil {
-			return time.Duration(n) * time.Minute, nil
+	for _, syntax := range customDurationSyntaxes {
+		if !strings.HasSuffix(s, syntax.suffix) {
+			continue
 		}
-	}
-	if strings.HasSuffix(s, "h") || strings.HasSuffix(s, "hr") || strings.HasSuffix(s, "hour") {
-		s2 := strings.TrimSuffix(strings.TrimSuffix(strings.TrimSuffix(s, "hour"), "hr"), "h")
-		if n, err := strconv.Atoi(strings.TrimSpace(s2)); err == nil {
-			return time.Duration(n) * time.Hour, nil
+		value := strings.TrimSpace(strings.TrimSuffix(s, syntax.suffix))
+		n, err := strconv.ParseInt(value, 10, 64)
+		if err != nil {
+			return 0, fmt.Errorf("cannot parse duration %q: %w", s, err)
 		}
-	}
-	if strings.HasSuffix(s, "s") || strings.HasSuffix(s, "sec") {
-		s2 := strings.TrimSuffix(strings.TrimSuffix(s, "sec"), "s")
-		if n, err := strconv.Atoi(strings.TrimSpace(s2)); err == nil {
-			return time.Duration(n) * time.Second, nil
-		}
+		return scaleDuration(s, n, syntax.unit)
 	}
 	return 0, fmt.Errorf("cannot parse duration %q", s)
+}
+
+func validatePositiveDuration(input string, d time.Duration) (time.Duration, error) {
+	if d <= 0 {
+		return 0, fmt.Errorf("duration %q must be positive", input)
+	}
+	return d, nil
+}
+
+func scaleDuration(input string, value int64, unit time.Duration) (time.Duration, error) {
+	if value <= 0 {
+		return 0, fmt.Errorf("duration %q must be positive", input)
+	}
+	const maxDuration = int64(1<<63 - 1)
+	if value > maxDuration/int64(unit) {
+		return 0, fmt.Errorf("duration %q overflows time.Duration", input)
+	}
+	return validatePositiveDuration(input, time.Duration(value)*unit)
 }
 
 func LoadFile(path string) ([]Task, error) {
