@@ -1,0 +1,5 @@
+name,cron,command,duration,host,resource
+backup-db,0 2 * * *,"pg_dump -a maindb",45m,db-01,pg-main
+logrotate,0 0 * * *,"/usr/sbin/logrotate /etc/logrotate.conf",5m,web-01,
+metrics-scrape,*/5 * * * *,"/opt/prometheus/scrape.sh",2m,web-01,
+daily-report,30 6 * * MON-FRI,"python3 /opt/report/daily.py",20m,web-01,

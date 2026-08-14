@@ -1,0 +1,76 @@
+[
+  {
+    "name": "backup-db",
+    "cron": "0 2 * * *",
+    "command": "pg_dump -a maindb",
+    "duration": "45m",
+    "host": "db-01",
+    "resource": "pg-main"
+  },
+  {
+    "name": "backup-db-replica",
+    "cron": "15 2 * * *",
+    "command": "pg_dump -a maindb --replica",
+    "duration": "40m",
+    "host": "db-02",
+    "resource": "pg-main"
+  },
+  {
+    "name": "logrotate",
+    "cron": "0 0 * * *",
+    "command": "/usr/sbin/logrotate /etc/logrotate.conf",
+    "duration": "5m",
+    "host": "web-01"
+  },
+  {
+    "name": "metrics-scrape",
+    "cron": "*/5 * * * *",
+    "command": "/opt/prometheus/scrape.sh",
+    "duration": "2m",
+    "host": "web-01"
+  },
+  {
+    "name": "healthcheck-1",
+    "cron": "0 0 * * *",
+    "command": "curl -s https://app/health",
+    "duration": "2m",
+    "host": "web-01"
+  },
+  {
+    "name": "healthcheck-2",
+    "cron": "0 0 * * *",
+    "command": "curl -s https://api/health",
+    "duration": "2m",
+    "host": "web-01"
+  },
+  {
+    "name": "healthcheck-3",
+    "cron": "0 0 * * *",
+    "command": "curl -s https://cache/health",
+    "duration": "2m",
+    "host": "web-01"
+  },
+  {
+    "name": "daily-report",
+    "cron": "30 6 * * MON-FRI",
+    "command": "python3 /opt/report/daily.py",
+    "duration": "20m",
+    "host": "web-01"
+  },
+  {
+    "name": "etl-hourly",
+    "cron": "10 * * * *",
+    "command": "python3 /opt/etl/run.py",
+    "duration": "15m",
+    "host": "etl-01",
+    "resource": "warehouse"
+  },
+  {
+    "name": "etl-hourly-heavy",
+    "cron": "10 * * * *",
+    "command": "python3 /opt/etl/heavy.py",
+    "duration": "25m",
+    "host": "etl-01",
+    "resource": "warehouse"
+  }
+]
