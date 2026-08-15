@@ -1,0 +1,26 @@
+Go result repository container validation
+task_id: 13
+task_type: bugfix
+platform: linux/amd64
+image: gomark-task-13-amd64:6ee488246756
+started_at: 2026-08-15T00:21:44.309Z
+finished_at: 2026-08-15T00:22:13.027Z
+status: pass
+
+===== command 1 =====
+phase: health_build
+$ docker run --rm --network none --platform linux/amd64 -e GOTOOLCHAIN=local -e GOPROXY=off -e GOSUMDB=off gomark-task-13-amd64:6ee488246756 bash -c set -euo pipefail
+echo "$ go version"
+go version
+cd '/app'
+echo "$ go build ./..."
+GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off go build ./...
+cwd: E:\gomark\tmp\task-package-13-c645f628-08de-46e4-8203-0cc06655ccea\source
+actual_exit: 0
+--- stdout ---
+$ go version
+go version go1.22.12 linux/amd64
+$ go build ./...
+
+--- stderr ---
+

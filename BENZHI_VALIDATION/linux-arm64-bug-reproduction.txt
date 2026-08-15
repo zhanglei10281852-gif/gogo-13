@@ -1,0 +1,132 @@
+Go result repository container validation
+task_id: 13
+task_type: bugfix
+platform: linux/arm64
+image: gomark-task-13-arm64-parent:6ee488246756
+started_at: 2026-08-15T00:22:13.095Z
+finished_at: 2026-08-15T00:26:10.194Z
+status: pass
+verification_1: expected_exit=1; actual_exit=1; matched=true; command=go test ./pkg/task -run "^TestLoadFile" -count=1 -v
+
+===== command 1 =====
+phase: bug_reproduction
+$ docker run --rm --network none --platform linux/arm64 --mount type=bind,source=E:\gomark\tmp\task-package-13-c645f628-08de-46e4-8203-0cc06655ccea\trusted-test.patch,target=/tmp/gomark-trusted-test.patch,readonly -e GOTOOLCHAIN=local -e GOPROXY=off -e GOSUMDB=off gomark-task-13-arm64-parent:6ee488246756 bash -c set -o pipefail
+git apply --check /tmp/gomark-trusted-test.patch >/dev/null || exit 97
+git apply /tmp/gomark-trusted-test.patch >/dev/null || exit 98
+cd '/app'
+echo "$ go test ./pkg/task -run \"^TestLoadFile\" -count=1 -v"
+go test ./pkg/task -run "^TestLoadFile" -count=1 -v
+cwd: E:\gomark\tmp\task-package-13-c645f628-08de-46e4-8203-0cc06655ccea\parent-source
+actual_exit: 1
+--- stdout ---
+$ go test ./pkg/task -run "^TestLoadFile" -count=1 -v
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0s
+    task_public_test.go:54: LoadFile accepted duration "0s": [{Name:job CronExpr:0 10 * * * Command:run Duration:0s Host:host-a Resource: Schedule:0x40001be120}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1s
+    task_public_test.go:54: LoadFile accepted duration "-1s": [{Name:job CronExpr:0 10 * * * Command:run Duration:-1s Host:host-a Resource: Schedule:0x40000f4000}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0
+    task_public_test.go:54: LoadFile accepted duration "0": [{Name:job CronExpr:0 10 * * * Command:run Duration:0s Host:host-a Resource: Schedule:0x40000f4120}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1
+    task_public_test.go:54: LoadFile accepted duration "-1": [{Name:job CronExpr:0 10 * * * Command:run Duration:-1m0s Host:host-a Resource: Schedule:0x40000f4240}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0min
+    task_public_test.go:54: LoadFile accepted duration "0min": [{Name:job CronExpr:0 10 * * * Command:run Duration:0s Host:host-a Resource: Schedule:0x40000f4360}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1hour
+    task_public_test.go:54: LoadFile accepted duration "-1hour": [{Name:job CronExpr:0 10 * * * Command:run Duration:-1h0m0s Host:host-a Resource: Schedule:0x40000f4480}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/153722868
+    task_public_test.go:54: LoadFile accepted duration "153722868": [{Name:job CronExpr:0 10 * * * Command:run Duration:-2562047h46m33.709551616s Host:host-a Resource: Schedule:0x40000f45a0}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/153722868min
+    task_public_test.go:54: LoadFile accepted duration "153722868min": [{Name:job CronExpr:0 10 * * * Command:run Duration:-2562047h46m33.709551616s Host:host-a Resource: Schedule:0x40000f46c0}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/2562048hour
+    task_public_test.go:54: LoadFile accepted duration "2562048hour": [{Name:job CronExpr:0 10 * * * Command:run Duration:-2562047h34m33.709551616s Host:host-a Resource: Schedule:0x40000f47e0}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/9223372037sec
+    task_public_test.go:54: LoadFile accepted duration "9223372037sec": [{Name:job CronExpr:0 10 * * * Command:run Duration:-2562047h47m16.709551616s Host:host-a Resource: Schedule:0x40000f4900}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0s
+    task_public_test.go:54: LoadFile accepted duration "0s": [{Name:job CronExpr:0 10 * * * Command:run Duration:0s Host:host-a Resource: Schedule:0x40000f4a20}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1s
+    task_public_test.go:54: LoadFile accepted duration "-1s": [{Name:job CronExpr:0 10 * * * Command:run Duration:-1s Host:host-a Resource: Schedule:0x40000f4b40}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0
+    task_public_test.go:54: LoadFile accepted duration "0": [{Name:job CronExpr:0 10 * * * Command:run Duration:0s Host:host-a Resource: Schedule:0x40000f4c60}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1
+    task_public_test.go:54: LoadFile accepted duration "-1": [{Name:job CronExpr:0 10 * * * Command:run Duration:-1m0s Host:host-a Resource: Schedule:0x40000f4d80}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0min
+    task_public_test.go:54: LoadFile accepted duration "0min": [{Name:job CronExpr:0 10 * * * Command:run Duration:0s Host:host-a Resource: Schedule:0x40000f4ea0}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1hour
+    task_public_test.go:54: LoadFile accepted duration "-1hour": [{Name:job CronExpr:0 10 * * * Command:run Duration:-1h0m0s Host:host-a Resource: Schedule:0x40000f4fc0}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/153722868
+    task_public_test.go:54: LoadFile accepted duration "153722868": [{Name:job CronExpr:0 10 * * * Command:run Duration:-2562047h46m33.709551616s Host:host-a Resource: Schedule:0x40000f50e0}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/153722868min
+    task_public_test.go:54: LoadFile accepted duration "153722868min": [{Name:job CronExpr:0 10 * * * Command:run Duration:-2562047h46m33.709551616s Host:host-a Resource: Schedule:0x40000f5200}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/2562048hour
+    task_public_test.go:54: LoadFile accepted duration "2562048hour": [{Name:job CronExpr:0 10 * * * Command:run Duration:-2562047h34m33.709551616s Host:host-a Resource: Schedule:0x40000f5320}]
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/9223372037sec
+    task_public_test.go:54: LoadFile accepted duration "9223372037sec": [{Name:job CronExpr:0 10 * * * Command:run Duration:-2562047h47m16.709551616s Host:host-a Resource: Schedule:0x40000f5440}]
+--- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations (0.08s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0s (0.03s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1s (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0 (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1 (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0min (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1hour (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/153722868 (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/153722868min (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/2562048hour (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/9223372037sec (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0s (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1s (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0 (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1 (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0min (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1hour (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/153722868 (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/153722868min (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/2562048hour (0.00s)
+    --- FAIL: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/9223372037sec (0.00s)
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/1ns
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/1m30s
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/15
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/153722867
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/5min
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/153722867min
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/2hour
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/2562047hour
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/3sec
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/9223372036sec
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/1ns
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/1m30s
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/15
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/153722867
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/5min
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/153722867min
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/2hour
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/2562047hour
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/3sec
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/9223372036sec
+--- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations (0.05s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/1ns (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/1m30s (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/15 (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/153722867 (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/5min (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/153722867min (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/2hour (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/2562047hour (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/3sec (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/9223372036sec (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/1ns (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/1m30s (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/15 (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/153722867 (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/5min (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/153722867min (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/2hour (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/2562047hour (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/3sec (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/9223372036sec (0.00s)
+FAIL
+FAIL	github.com/ops/cronchecker/pkg/task	0.252s
+FAIL
+
+--- stderr ---
+

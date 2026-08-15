@@ -1,0 +1,127 @@
+Go result repository container validation
+task_id: 13
+task_type: bugfix
+platform: linux/arm64
+image: gomark-task-13-arm64:6ee488246756
+started_at: 2026-08-15T00:22:13.095Z
+finished_at: 2026-08-15T00:26:10.194Z
+status: pass
+verification_1: expected_exit=0; actual_exit=0; matched=true; command=go test ./pkg/task -run "^TestLoadFile" -count=1 -v
+verification_2: expected_exit=0; actual_exit=0; matched=true; command=go test -buildvcs=false -count=1 ./...
+
+===== command 1 =====
+phase: result_verification
+$ docker run --rm --network none --platform linux/arm64 --mount type=bind,source=E:\gomark\tmp\task-package-13-c645f628-08de-46e4-8203-0cc06655ccea\trusted-test.patch,target=/tmp/gomark-trusted-test.patch,readonly -e GOTOOLCHAIN=local -e GOPROXY=off -e GOSUMDB=off gomark-task-13-arm64:6ee488246756 bash -c set -o pipefail
+git apply --check /tmp/gomark-trusted-test.patch >/dev/null || exit 97
+git apply /tmp/gomark-trusted-test.patch >/dev/null || exit 98
+go test ./pkg/task -run "^TestLoadFile" -count=1 -v
+cwd: E:\gomark\tmp\task-package-13-c645f628-08de-46e4-8203-0cc06655ccea\source
+actual_exit: 0
+--- stdout ---
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0s
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1s
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0min
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1hour
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/153722868
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/153722868min
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/2562048hour
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/9223372037sec
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0s
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1s
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0min
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1hour
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/153722868
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/153722868min
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/2562048hour
+=== RUN   TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/9223372037sec
+--- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations (0.07s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0s (0.02s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1s (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0 (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1 (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/0min (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/-1hour (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/153722868 (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/153722868min (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/2562048hour (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/json/9223372037sec (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0s (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1s (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0 (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1 (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/0min (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/-1hour (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/153722868 (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/153722868min (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/2562048hour (0.00s)
+    --- PASS: TestLoadFileRejectsNonPositiveAndOverflowingDurations/csv/9223372037sec (0.00s)
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/1ns
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/1m30s
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/15
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/153722867
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/5min
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/153722867min
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/2hour
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/2562047hour
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/3sec
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/json/9223372036sec
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/1ns
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/1m30s
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/15
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/153722867
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/5min
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/153722867min
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/2hour
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/2562047hour
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/3sec
+=== RUN   TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/9223372036sec
+--- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations (0.07s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/1ns (0.01s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/1m30s (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/15 (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/153722867 (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/5min (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/153722867min (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/2hour (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/2562047hour (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/3sec (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/json/9223372036sec (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/1ns (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/1m30s (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/15 (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/153722867 (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/5min (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/153722867min (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/2hour (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/2562047hour (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/3sec (0.00s)
+    --- PASS: TestLoadFileAndExpandExecutionsAcceptValidDurations/csv/9223372036sec (0.00s)
+PASS
+ok  	github.com/ops/cronchecker/pkg/task	0.260s
+
+--- stderr ---
+
+
+===== command 2 =====
+phase: result_verification
+$ docker run --rm --network none --platform linux/arm64 --mount type=bind,source=E:\gomark\tmp\task-package-13-c645f628-08de-46e4-8203-0cc06655ccea\trusted-test.patch,target=/tmp/gomark-trusted-test.patch,readonly -e GOTOOLCHAIN=local -e GOPROXY=off -e GOSUMDB=off gomark-task-13-arm64:6ee488246756 bash -c set -o pipefail
+git apply --check /tmp/gomark-trusted-test.patch >/dev/null || exit 97
+git apply /tmp/gomark-trusted-test.patch >/dev/null || exit 98
+go test -buildvcs=false -count=1 ./...
+cwd: E:\gomark\tmp\task-package-13-c645f628-08de-46e4-8203-0cc06655ccea\source
+actual_exit: 0
+--- stdout ---
+?   	github.com/ops/cronchecker	[no test files]
+?   	github.com/ops/cronchecker/pkg/output	[no test files]
+ok  	github.com/ops/cronchecker/pkg/cron	0.276s
+ok  	github.com/ops/cronchecker/pkg/task	0.218s
+ok  	github.com/ops/cronchecker/pkg/timeline	0.135s
+
+--- stderr ---
+

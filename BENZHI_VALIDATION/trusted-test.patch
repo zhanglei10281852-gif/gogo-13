@@ -1,0 +1,10 @@
+diff --git a/pkg/task/task_public_test.go b/pkg/task/task_public_test.go
+index 78c33bf..2370ed0 100644
+--- a/pkg/task/task_public_test.go
++++ b/pkg/task/task_public_test.go
+@@ -107,3 +107,5 @@ func TestLoadFileAndExpandExecutionsAcceptValidDurations(t *testing.T) {
+ 		}
+ 	}
+ }
++
++// gomark trusted verification marker

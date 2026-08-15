@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -56,31 +57,66 @@ func parseDuration(s string) (time.Duration, error) {
 	if s == "" {
 		return 0, fmt.Errorf("empty duration")
 	}
+
+	// time.ParseDuration understands composite durations (e.g. "1m30s") and
+	// rejects overflow on its own, but it also accepts zero/negative values,
+	// which we must reject so that End stays strictly after Start.
 	if d, err := time.ParseDuration(s); err == nil {
+		if d <= 0 {
+			return 0, fmt.Errorf("duration must be greater than zero, got %q", s)
+		}
 		return d, nil
 	}
+
+	// Plain integer (e.g. "15") => minutes.
 	if n, err := strconv.Atoi(s); err == nil {
-		return time.Duration(n) * time.Minute, nil
+		return mulUnit(n, time.Minute, s)
 	}
-	if strings.HasSuffix(s, "m") || strings.HasSuffix(s, "min") {
-		s2 := strings.TrimSuffix(strings.TrimSuffix(s, "min"), "m")
-		if n, err := strconv.Atoi(strings.TrimSpace(s2)); err == nil {
-			return time.Duration(n) * time.Minute, nil
-		}
+
+	// Suffix forms not understood by time.ParseDuration (min/hr/hour/sec).
+	if n, ok := parseIntWithSuffix(s, "min", "m"); ok {
+		return mulUnit(n, time.Minute, s)
 	}
-	if strings.HasSuffix(s, "h") || strings.HasSuffix(s, "hr") || strings.HasSuffix(s, "hour") {
-		s2 := strings.TrimSuffix(strings.TrimSuffix(strings.TrimSuffix(s, "hour"), "hr"), "h")
-		if n, err := strconv.Atoi(strings.TrimSpace(s2)); err == nil {
-			return time.Duration(n) * time.Hour, nil
-		}
+	if n, ok := parseIntWithSuffix(s, "hour", "hr", "h"); ok {
+		return mulUnit(n, time.Hour, s)
 	}
-	if strings.HasSuffix(s, "s") || strings.HasSuffix(s, "sec") {
-		s2 := strings.TrimSuffix(strings.TrimSuffix(s, "sec"), "s")
-		if n, err := strconv.Atoi(strings.TrimSpace(s2)); err == nil {
-			return time.Duration(n) * time.Second, nil
-		}
+	if n, ok := parseIntWithSuffix(s, "sec", "s"); ok {
+		return mulUnit(n, time.Second, s)
 	}
 	return 0, fmt.Errorf("cannot parse duration %q", s)
+}
+
+// parseIntWithSuffix reports whether s ends with any of suffixes; if so it
+// strips all matching suffixes and parses the remainder as an integer.
+func parseIntWithSuffix(s string, suffixes ...string) (int, bool) {
+	matched := false
+	for _, suf := range suffixes {
+		if strings.HasSuffix(s, suf) {
+			matched = true
+			s = strings.TrimSuffix(s, suf)
+		}
+	}
+	if !matched {
+		return 0, false
+	}
+	n, err := strconv.Atoi(strings.TrimSpace(s))
+	if err != nil {
+		return 0, false
+	}
+	return n, true
+}
+
+// mulUnit scales n by unit, rejecting non-positive magnitudes and products
+// that would overflow time.Duration (which otherwise wrap to negative values
+// and silently break conflict detection).
+func mulUnit(n int, unit time.Duration, original string) (time.Duration, error) {
+	if n <= 0 {
+		return 0, fmt.Errorf("duration must be greater than zero, got %q", original)
+	}
+	if int64(n) > math.MaxInt64/int64(unit) {
+		return 0, fmt.Errorf("duration %q overflows time.Duration", original)
+	}
+	return time.Duration(n) * unit, nil
 }
 
 func LoadFile(path string) ([]Task, error) {

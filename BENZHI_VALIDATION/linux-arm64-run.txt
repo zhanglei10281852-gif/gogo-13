@@ -1,0 +1,71 @@
+Go result repository container validation
+task_id: 13
+task_type: bugfix
+platform: linux/arm64
+image: gomark-task-13-arm64:6ee488246756
+started_at: 2026-08-15T00:22:13.095Z
+finished_at: 2026-08-15T00:26:10.194Z
+status: pass
+
+===== command 1 =====
+phase: health_run
+$ docker run --rm --network none --platform linux/arm64 -e GOTOOLCHAIN=local -e GOPROXY=off -e GOSUMDB=off gomark-task-13-arm64:6ee488246756 bash -c set -euo pipefail
+cd '/app'
+package_name="$(GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off go list -f '{{.Name}}' . 2>/dev/null || true)"
+if [ "$package_name" = "main" ]; then
+  echo "$ go run ."
+  rm -f '/tmp/gomark-go-run-0.log'
+  GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off go run . >'/tmp/gomark-go-run-0.log' 2>&1 &
+  run_pid=$!
+  sleep 5
+  if kill -0 "$run_pid" 2>/dev/null; then
+    cat '/tmp/gomark-go-run-0.log'
+    kill -TERM "$run_pid" 2>/dev/null || true
+    wait "$run_pid" 2>/dev/null || true
+    echo "go run . started successfully and stayed running for 5 seconds"
+  else
+    set +e
+    wait "$run_pid"
+    run_status=$?
+    set -e
+    cat '/tmp/gomark-go-run-0.log'
+    if [ "$run_status" -ne 0 ]; then
+      if grep -q '^Usage of ' '/tmp/gomark-go-run-0.log' && grep -q '^exit status 2$' '/tmp/gomark-go-run-0.log'; then
+        echo "go run . reached standard CLI usage because required arguments were omitted"
+      else
+        exit "$run_status"
+      fi
+    else
+      echo "go run . completed successfully"
+    fi
+  fi
+else
+  echo "module . is not a runnable root main package; go run skipped"
+fi
+cwd: E:\gomark\tmp\task-package-13-c645f628-08de-46e4-8203-0cc06655ccea\source
+actual_exit: 0
+--- stdout ---
+$ go run .
+错误: 必须用 -f 指定任务清单文件
+Usage of /tmp/go-build228171827/b001/exe/cronchecker:
+  -days int
+    	向前推演的天数 (default 7)
+  -f string
+    	任务清单文件（.json 或 .csv），必填
+  -format string
+    	输出格式: text 或 json (default "text")
+  -hours int
+    	向前推演的小时数（与 days 叠加）
+  -spike-threshold int
+    	惊群检测阈值（窗口内达到多少任务触发算尖峰） (default 3)
+  -spike-window string
+    	惊群检测时间窗口（如 5m, 30s, 1h） (default "5m")
+  -strict
+    	检测到冲突时以非零退出码退出
+  -suggest-shift int
+    	错峰建议最大延迟分钟数 (default 30)
+exit status 2
+go run . reached standard CLI usage because required arguments were omitted
+
+--- stderr ---
+
